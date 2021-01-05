@@ -234,36 +234,105 @@ class SellBrite
         return $obj;
     }
     
-    public static function getDiff($old,$new)
-    {
-        $out = '';
-        $diff = '';
+    public static function getProducts(string $api_token, string $api_key, $limit, $page, $min_modified_at = null, $max_modified_at = null){
+        $client = new Client();        
+        $response = $client->request('GET', self::$base_url.'products', [
+            'auth' => [
+                $api_token,
+                $api_key
+            ],
+            'query' => [
+                'limit' => $limit,
+                'page' => $page,
+                'min_modified_at' => $min_modified_at,
+                'max_modified_at' => $max_modified_at
+            ]
+        ]);
         
-        if($old > $new){
-            $diff = $old - $new;
-            $out .= '<div class="ml-2 flex items-baseline text-sm font-semibold text-red-600">
-                <svg class="self-center flex-shrink-0 h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-                <span class="sr-only">
-                  Decreased by
-                </span>'.              
-                $diff.
-              '</div>';
-        }else{
-            $diff = $new - $old;
-            $out .= '<div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
-                <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                </svg>
-                <span class="sr-only">
-                  Increased by
-                </span>'.
-                $diff.
-              '</div>';
+        $obj = json_decode($response->getBody()->getContents());
+        
+        return $obj;
+    }
+    
+    public static function getInventory(string $api_token, string $api_key, $limit, $page, $warehouse = null){
+        $client = new Client();        
+        $response = $client->request('GET', self::$base_url.'inventory', [
+            'auth' => [
+                $api_token,
+                $api_key
+            ],
+            'query' => [
+                'limit' => $limit,
+                'page' => $page,
+                'warehouse_uuid' => $warehouse
+            ]
+        ]);
+        
+        $obj = json_decode($response->getBody()->getContents());
+        
+        return $obj;
+    }
+    
+    public static function getErrors(string $api_token, string $api_key, string $warehouse): array
+    {
+        $data = array();
+        $data['missing_description'] = 0;
+        $data['missing_images'] = 0;
+        $data['missing_category'] = 0;
+        $data['missing_cost'] = 0;
+        $data['missing_location'] = 0;
+        
+        $products = TRUE;
+        $page = 1;
+        $limit = 100;
+        while($products){
+            $curProducts = self::getProducts($api_token,$api_key,$limit,$page);
+            
+            if(count($curProducts) == $limit){
+                $page++;
+            }else{
+                $products = FALSE;
+            }
+            
+            foreach($curProducts as $curProduct){
+                if($curProduct->description == null){
+                    $data['missing_description'] = $data['missing_description'] + 1;
+                }
+                
+                if($curProduct->image_list == ""){
+                    $data['missing_images'] = $data['missing_images'] + 1;
+                }
+                
+                if($curProduct->category_name == ""){
+                    $data['missing_category'] = $data['missing_category'] + 1;
+                }
+            }
         }
         
-        return $out;
+        $inventory = TRUE;
+        $invPage = 1;
+        $invLimit = 100;
+        while($inventory){
+            $curItems = self::getInventory($api_token, $api_key, $invLimit, $invPage, $warehouse);
+            
+            if(count($curItems) == $invLimit){
+                $invPage++;
+            }else{
+                $inventory = FALSE;
+            }
+            
+            foreach($curItems as $curItem){
+                if($curItem->cost == ""){
+                    $data['missing_cost'] = $data['missing_cost'] + 1;
+                }
+                
+                if($curItem->bin_location == ""){
+                    $data['missing_location'] = $data['missing_location'] + 1;
+                }
+            }
+        }
+        
+        return $data;
     }
   
 }

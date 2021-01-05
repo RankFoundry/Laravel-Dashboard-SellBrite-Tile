@@ -6,8 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use RankFoundry\SellBriteTile\Commands\FetchSellBriteFulfillmentsCommand;
 use RankFoundry\SellBriteTile\Commands\FetchSellBriteSalesCommand;
+use RankFoundry\SellBriteTile\Commands\FetchSellBriteErrorsCommand;
 use RankFoundry\SellBriteTile\Components\SellBriteFulfillmentsComponent;
 use RankFoundry\SellBriteTile\Components\SellBriteSalesComponent;
+use RankFoundry\SellBriteTile\Components\SellBriteErrorsComponent;
 
 class SellBriteServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,7 @@ class SellBriteServiceProvider extends ServiceProvider
             $this->commands([
                 FetchSellBriteFulfillmentsCommand::class,
                 FetchSellBriteSalesCommand::class,
+                FetchSellBriteErrorsCommand::class,
             ]);
         }
 
@@ -28,5 +31,6 @@ class SellBriteServiceProvider extends ServiceProvider
 
         Livewire::component('sellbrite-fulfillments-tile', SellBriteFulfillmentsComponent::class);
         Livewire::component('sellbrite-sales-tile', SellBriteSalesComponent::class);
+        Livewire::component('sellbrite-errors-tile', SellBriteErrorsComponent::class);
     }
 }

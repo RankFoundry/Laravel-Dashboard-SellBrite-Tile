@@ -42,6 +42,18 @@ class SellBriteStore
         return $this->tile->getData('sellbrite:sales') ?? [];
     }
 
+    public function setErrors(array $errors): self
+    {
+        $this->tile->putData('sellbrite:errors', $errors);
+
+        return $this;
+    }
+
+    public function errors()
+    {
+        return $this->tile->getData('sellbrite:errors') ?? [];
+    }
+
     public function setData(array $data): self
     {
         $this->tile->putData('key', $data);
