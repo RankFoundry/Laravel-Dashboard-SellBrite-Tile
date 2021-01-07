@@ -281,6 +281,8 @@ class SellBrite
         $data['missing_category'] = 0;
         $data['missing_cost'] = 0;
         $data['missing_location'] = 0;
+        $data['total_products'] = 0;
+        $data['total_active'] = 0;
         
         $products = TRUE;
         $page = 1;
@@ -294,17 +296,22 @@ class SellBrite
                 $products = FALSE;
             }
             
+            $data['total_produtcts'] = count($curProducts);
+            
             foreach($curProducts as $curProduct){
-                if($curProduct->description == null){
-                    $data['missing_description'] = $data['missing_description'] + 1;
-                }
-                
-                if($curProduct->image_list == ""){
-                    $data['missing_images'] = $data['missing_images'] + 1;
-                }
-                
-                if($curProduct->category_name == ""){
-                    $data['missing_category'] = $data['missing_category'] + 1;
+                if($curProduct->quantity > 0){
+                    $data['total_active'] = $data['total_active'] + 1;
+                    if($curProduct->description == null){
+                        $data['missing_description'] = $data['missing_description'] + 1;
+                    }
+
+                    if($curProduct->image_list == ""){
+                        $data['missing_images'] = $data['missing_images'] + 1;
+                    }
+
+                    if($curProduct->category_name == ""){
+                        $data['missing_category'] = $data['missing_category'] + 1;
+                    }
                 }
             }
         }
@@ -322,12 +329,14 @@ class SellBrite
             }
             
             foreach($curItems as $curItem){
-                if($curItem->cost == ""){
-                    $data['missing_cost'] = $data['missing_cost'] + 1;
-                }
-                
-                if($curItem->bin_location == ""){
-                    $data['missing_location'] = $data['missing_location'] + 1;
+                if($curItem->on_hand > 0){
+                    if($curItem->cost == ""){
+                        $data['missing_cost'] = $data['missing_cost'] + 1;
+                    }
+
+                    if($curItem->bin_location == ""){
+                        $data['missing_location'] = $data['missing_location'] + 1;
+                    }
                 }
             }
         }
