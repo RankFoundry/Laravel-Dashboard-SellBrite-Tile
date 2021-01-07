@@ -202,7 +202,7 @@ class SellBrite
                         $items = 0;
                         foreach($curOrder->items as $item){
                             $items = $items + $item->quantity;
-                            $itemCost = getItemCost($api_token,$api_key,$item->inventory_sku);
+                            $itemCost = self::getItemCost($api_token,$api_key,$item->inventory_sku);
                             $data['cost'] = $data['cost'] + ($itemCost * $item->quantity);
                         }
                         
