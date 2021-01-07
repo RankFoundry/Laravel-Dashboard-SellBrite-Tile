@@ -180,6 +180,7 @@ class SellBrite
         $data['gross'] = 0;
         $data['orders'] = 0;
         $data['items'] = 0;
+        $data['cost'] = 0;
         
         $orders = TRUE;
         $page = 1;
@@ -201,6 +202,8 @@ class SellBrite
                         $items = 0;
                         foreach($curOrder->items as $item){
                             $items = $items + $item->quantity;
+                            $itemCost = getItemCost($api_token,$api_key,$item->inventory_sku);
+                            $data['cost'] = $data['cost'] + ($itemCost * $item->quantity);
                         }
                         
                         $data['gross'] = $data['gross'] + $curOrder->total;
@@ -271,6 +274,25 @@ class SellBrite
         $obj = json_decode($response->getBody()->getContents());
         
         return $obj;
+    }
+    
+    
+    
+    public static function getItemCost(string $api_token, string $api_key, string $sku){
+        $client = new Client();        
+        $response = $client->request('GET', self::$base_url.'inventory', [
+            'auth' => [
+                $api_token,
+                $api_key
+            ],
+            'query' => [
+                'sku' => $sku
+            ]
+        ]);
+        
+        $obj = json_decode($response->getBody()->getContents());
+        
+        return $obj[0]->cost;
     }
     
     public static function getErrors(string $api_token, string $api_key, string $warehouse): array
