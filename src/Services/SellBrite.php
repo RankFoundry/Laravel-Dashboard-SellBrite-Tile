@@ -278,7 +278,11 @@ class SellBrite
     
     
     
-    public static function getItemCost(string $api_token, string $api_key, string $sku){
+    public static function getItemCost(string $api_token, string $api_key,$sku = null){
+        if($sku = null){
+            return 0;
+        }
+        
         $client = new Client();        
         $response = $client->request('GET', self::$base_url.'inventory', [
             'auth' => [
