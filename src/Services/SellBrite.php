@@ -296,7 +296,7 @@ class SellBrite
                 $products = FALSE;
             }
             
-            $data['total_products'] = count($curProducts);
+            $data['total_products'] = $data['total_products'] + count($curProducts);
             
             foreach($curProducts as $curProduct){
                 if($curProduct->quantity > 0){
