@@ -128,7 +128,7 @@ class SellBrite
                 'pending' => $todayStats['pending'],
                 'gross' => $todayStats['gross'],
                 'gross_diff' => ($todayStats['gross'] - $yesterdayStats['gross']),
-                'cost' => '-',
+                'cost' => $todayStats['cost'],
                 'profit' => '-',
                 'margin' => '-'
             ),
@@ -140,7 +140,7 @@ class SellBrite
                 'pending' => $yesterdayStats['pending'],
                 'gross' => $yesterdayStats['gross'],
                 'gross_diff' => ($yesterdayStats['gross'] - $daybeforeStats['gross']),
-                'cost' => '-',
+                'cost' => $yesterdayStats['cost'],
                 'profit' => '-',
                 'margin' => '-'
             ),
@@ -152,7 +152,7 @@ class SellBrite
                 'pending' => $thisWeekStats['pending'],
                 'gross' => $thisWeekStats['gross'],
                 'gross_diff' => ($thisWeekStats['gross'] - $lastWeekStats['gross']),
-                'cost' => '-',
+                'cost' => $thisWeekStats['cost'],
                 'profit' => '-',
                 'margin' => '-'
             ),
@@ -164,7 +164,7 @@ class SellBrite
                 'pending' => $thisMonthStats['pending'],
                 'gross' => $thisMonthStats['gross'],
                 'gross_diff' => ($thisMonthStats['gross'] - $lastMonthStats['gross']),
-                'cost' => '-',
+                'cost' => $thisMonthStats['cost'],
                 'profit' => '-',
                 'margin' => '-'
             )
