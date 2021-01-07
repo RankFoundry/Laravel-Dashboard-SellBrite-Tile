@@ -296,11 +296,12 @@ class SellBrite
                 $products = FALSE;
             }
             
-            $data['total_produtcts'] = count($curProducts);
+            $data['total_products'] = count($curProducts);
             
             foreach($curProducts as $curProduct){
                 if($curProduct->quantity > 0){
                     $data['total_active'] = $data['total_active'] + 1;
+                    
                     if($curProduct->description == null){
                         $data['missing_description'] = $data['missing_description'] + 1;
                     }
